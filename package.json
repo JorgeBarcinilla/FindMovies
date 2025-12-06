@@ -1,24 +1,25 @@
 {
   "name": "find-movies",
   "version": "0.0.0",
+  "author": "Jorge Palacio Barcinilla",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:FindMovies": "node dist/FindMovies/server/server.mjs"
+    "serve:ssr:FindMovies": "node dist/FindMovies/server/server.mjs",
+    "prepare": "husky install",
+    "build:doc": "compodoc -p tsconfig.doc.json --theme  -d dist/apps/documentation/compodoc ",
+    "lint": "ng lint"
   },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,html}": [
+      "eslint --fix ",
+      "prettier --write"
+    ],
+    "*.{html,css,scss,md,json,yml,yaml}": [
+      "prettier --write"
     ]
   },
   "private": true,
@@ -36,18 +37,40 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-eslint/schematics": "^21.0.1",
     "@angular/build": "^20.3.13",
     "@angular/cli": "^20.3.13",
     "@angular/compiler-cli": "^20.3.0",
+    "@compodoc/compodoc": "^1.1.32",
+    "@ngrx/eslint-plugin": "^20.0.1",
+    "@ngrx/schematics": "^20.1.0",
+    "@smarttools/eslint-plugin-rxjs": "^1.0.22",
+    "@stylistic/eslint-plugin": "^5.5.0",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "angular-eslint": "20.6.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^60.3.0",
+    "eslint-plugin-perfectionist": "^4.15.0",
+    "husky": "^9.0.6",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "lint-staged": "^16.2.3",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.40.0"
   }
 }

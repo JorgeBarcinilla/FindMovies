@@ -2,9 +2,10 @@ import {
   AngularNodeAppEngine,
   createNodeRequestHandler,
   isMainModule,
-  writeResponseToNodeResponse,
+  writeResponseToNodeResponse
 } from '@angular/ssr/node';
 import express from 'express';
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -29,10 +30,10 @@ const angularApp = new AngularNodeAppEngine();
  */
 app.use(
   express.static(browserDistFolder, {
-    maxAge: '1y',
     index: false,
-    redirect: false,
-  }),
+    maxAge: '1y',
+    redirect: false
+  })
 );
 
 /**
@@ -41,9 +42,7 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 
@@ -58,7 +57,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
       throw error;
     }
 
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    console.info(`Node Express server listening on http://localhost:${port}`);
   });
 }
 
