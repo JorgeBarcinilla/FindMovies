@@ -1,52 +1,28 @@
-import {
-  AngularNodeAppEngine,
-  createNodeRequestHandler,
-  isMainModule,
-  writeResponseToNodeResponse
-} from '@angular/ssr/node';
-import express from 'express';
-// eslint-disable-next-line import/no-nodejs-modules
-import { join } from 'node:path';
+import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
+import { getContext } from '@netlify/angular-runtime/context.mjs';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
-
-const app = express();
-const angularApp = new AngularNodeAppEngine();
-
-app.use(
-  express.static(browserDistFolder, {
-    index: false,
-    maxAge: '1y',
-    redirect: false
-  })
-);
+const angularAppEngine = new AngularAppEngine();
 
 /**
- * Handle all other requests by rendering the Angular application.
+ * El manejador de solicitudes usado por Netlify.
+ * @param {Request} request - La solicitud HTTP.
+ * @returns {Promise<Response>} - La respuesta HTTP.
  */
-app.use((req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-    .catch(next);
-});
+export async function netlifyAppEngineHandler(request: Request): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const context = getContext();
 
-/**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
-  const port = process.env['PORT'] || 4000;
-  app.listen(port, (error) => {
-    if (error) {
-      throw error;
-    }
+  // Aquí puedes definir endpoints de API de ejemplo si los necesitas
+  // const pathname = new URL(request.url).pathname;
+  // if (pathname === '/api/hello') {
+  //   return Response.json({ message: 'Hello from the API' });
+  // }
 
-    console.info(`Node Express server listening on http://localhost:${port}`);
-  });
+  const result = await angularAppEngine.handle(request, context);
+  return result || new Response('Not found', { status: 404 });
 }
 
 /**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ * El manejador de solicitudes usado por Angular CLI (dev-server y durante el build).
  */
-export const reqHandler = createNodeRequestHandler(app);
+export const reqHandler = createRequestHandler(netlifyAppEngineHandler);
