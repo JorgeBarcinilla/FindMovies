@@ -1,0 +1,7 @@
+[build]
+command = "ng build"
+# OJO: En Angular moderno (v17+), la ruta suele ser dist/nombre-proyecto/browser
+publish = "dist/FindMovies/browser"
+
+[[plugins]]
+package = "@netlify/angular-runtime"
