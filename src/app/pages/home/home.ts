@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MoviesStore } from '../../core/store/movies.store';
 import { SignalPipe } from '../../pipes/signal.pipe';
@@ -31,10 +31,6 @@ export class HomeComponent {
   protected readonly _moviesStore = inject(MoviesStore);
 
   /**
-   * Pestaña activa para la sección de tendencias
-   */
-  protected readonly activeTrendingTab = signal<string>('movies');
-  /**
    * Opciones de pestaña para la sección de tendencias
    */
   protected readonly trendingTabs: TabOption[] = [
@@ -65,12 +61,5 @@ export class HomeComponent {
     if (!this._moviesStore.isLoadingMoreSeries()) {
       this._moviesStore.loadMoreSeries();
     }
-  }
-  /**
-   * Maneja el cambio de pestaña de tendencias
-   * @param {string} tab - Valor de la pestaña seleccionada
-   */
-  protected onTrendingTabChange(tab: string): void {
-    this.activeTrendingTab.set(tab);
   }
 }

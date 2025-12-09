@@ -9,6 +9,8 @@ import type { ErrorInfo } from '../services/error-handler.service';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { TmdbApiService } from '../services/tmdb-api.service';
 
+export type TrendingTab = 'movies' | 'series';
+
 interface MoviesState {
   isLoadingMoreMovies: boolean;
   isLoadingMoreRecent: boolean;
@@ -21,6 +23,7 @@ interface MoviesState {
   trendingError: ErrorInfo | null;
   trendingMovies: MediaItem[];
   trendingMoviesPage: number;
+  trendingTabSelected: TrendingTab;
   trendingTvSeries: MediaItem[];
   trendingTvSeriesPage: number;
 }
@@ -37,6 +40,7 @@ const initialState: MoviesState = {
   trendingError: null,
   trendingMovies: [],
   trendingMoviesPage: 1,
+  trendingTabSelected: 'movies',
   trendingTvSeries: [],
   trendingTvSeriesPage: 1
 };
@@ -206,6 +210,14 @@ export const MoviesStore = signalStore(
         })
       )
     ),
+
+    /**
+     * Maneja el cambio de pestaña de tendencias
+     * @param {TrendingTab} tab - Valor de la pestaña seleccionada
+     */
+    onTrendingTabChange(tab: TrendingTab): void {
+      patchState(store, { trendingTabSelected: tab });
+    },
 
     /**
      * Actualiza todos los datos

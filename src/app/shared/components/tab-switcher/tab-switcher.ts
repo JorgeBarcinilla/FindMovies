@@ -1,10 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 
+import { MoviesStore, TrendingTab } from '../../../core/store/movies.store';
 import { SignalPipe } from '../../../pipes/signal.pipe';
 
 export interface TabOption {
   label: string;
-  value: string;
+  value: TrendingTab;
 }
 
 /**
@@ -17,15 +18,17 @@ export interface TabOption {
   templateUrl: './tab-switcher.html'
 })
 export class TabSwitcherComponent {
-  activeTab = input.required<string>();
-  tabChange = output<string>();
+  private readonly _moviesStore = inject(MoviesStore);
+
+  activeTab = input.required<TrendingTab>();
+  tabChange = output<TrendingTab>();
   tabs = input.required<TabOption[]>();
 
   /**
    * Maneja el clic en la pestaña
-   * @param {string} value - Valor de la pestaña
+   * @param {TrendingTab} value - Valor de la pestaña
    */
-  protected onTabClick(value: string): void {
-    this.tabChange.emit(value);
+  protected onTabClick(value: TrendingTab): void {
+    this._moviesStore.onTrendingTabChange(value);
   }
 }

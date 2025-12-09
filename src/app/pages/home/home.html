@@ -44,13 +44,9 @@
         <p class="text-base text-gray-600 dark:text-gray-400">Lo más popular del momento</p>
       </div>
 
-      <app-tab-switcher
-        [tabs]="trendingTabs"
-        [activeTab]="activeTrendingTab | signal"
-        (tabChange)="onTrendingTabChange($event)"
-      />
+      <app-tab-switcher [tabs]="trendingTabs" [activeTab]="_moviesStore.trendingTabSelected | signal" />
 
-      @if ((activeTrendingTab | signal) === 'movies') {
+      @if ((_moviesStore.trendingTabSelected | signal)=== 'movies') {
       <app-horizontal-scroll [isLoading]="_moviesStore.isLoadingMoreMovies | signal" (loadMore)="onLoadMoreMovies()">
         @for (movie of _moviesStore.trendingMovies | signal; let i = $index; track movie.id) {
         <div class="shrink-0">
@@ -62,7 +58,7 @@
         </div>
         } }
       </app-horizontal-scroll>
-      } @if ((activeTrendingTab | signal) === 'series') {
+      } @if ((_moviesStore.trendingTabSelected | signal) === 'series') {
       <app-horizontal-scroll [isLoading]="_moviesStore.isLoadingMoreSeries | signal" (loadMore)="onLoadMoreSeries()">
         @for (series of _moviesStore.trendingTvSeries | signal; let i = $index; track series.id) {
         <div class="shrink-0">
