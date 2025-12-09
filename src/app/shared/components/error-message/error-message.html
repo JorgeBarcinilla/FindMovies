@@ -1,0 +1,31 @@
+@if (error | signal) {
+<div
+  class="flex flex-col items-center justify-center p-8 text-center max-w-md mx-auto bg-white/10 dark:bg-gray-900/60 backdrop-blur-md rounded-lg border border-white/20 dark:border-white/10"
+>
+  <div class="text-yellow-600 mb-4">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-12 h-12"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+      />
+    </svg>
+  </div>
+  <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">¡Ups! Algo salió mal</h3>
+  <p class="text-gray-700 dark:text-gray-300 mb-6">{{ error()!.message }}</p>
+  <button
+    type="button"
+    class="px-6 py-3 rounded-lg font-semibold text-gray-900 dark:text-gray-100 cursor-pointer bg-yellow-600/20 hover:bg-yellow-600/30 backdrop-blur-sm border border-yellow-600/30 transition-all duration-300"
+    (click)="onRetry()"
+  >
+    Intentar de nuevo
+  </button>
+</div>
+}

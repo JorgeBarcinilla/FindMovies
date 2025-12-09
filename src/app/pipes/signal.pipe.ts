@@ -8,7 +8,8 @@ import { Pipe, PipeTransform, Signal } from '@angular/core';
  */
 @Pipe({
   name: 'signal',
-  pure: false
+  pure: false,
+  standalone: true
 })
 export class SignalPipe implements PipeTransform {
   /**

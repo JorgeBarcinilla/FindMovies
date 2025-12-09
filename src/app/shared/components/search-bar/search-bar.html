@@ -1,0 +1,114 @@
+<div class="relative w-full max-w-[500px] sm:max-w-full">
+  <div
+    class="relative flex items-center gap-3 px-4 py-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-full transition-all duration-300 focus-within:bg-white/90 dark:focus-within:bg-white/10 focus-within:border-purple-500/30 dark:focus-within:border-purple-500/50 focus-within:shadow-[0_4px_12px_rgba(168,85,247,0.2)] sm:px-3.5 sm:py-2.5"
+  >
+    <svg
+      class="shrink-0 text-gray-500 dark:text-gray-400"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+    <input
+      #searchInput
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Buscar películas y series..."
+      class="flex-1 bg-transparent border-none outline-none text-base font-medium text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:text-sm"
+      (focus)="isDropdownOpen.set((searchControl.value?.trim()?.length ?? 0) > 0)"
+    />
+    @if (searchControl.value && searchControl.value.length > 0) {
+    <button
+      type="button"
+      class="shrink-0 flex items-center justify-center p-1 bg-transparent border-none rounded-full text-gray-500 hover:bg-gray-500/10 hover:text-gray-600 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-gray-300 cursor-pointer transition-all duration-200"
+      (click)="clearSearch()"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+    }
+  </div>
+
+  @if (showDropdown | signal) {
+  <div
+    class="absolute top-[calc(100%+0.5rem)] left-0 right-0 max-h-[500px] overflow-y-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] z-50 animate-[dropdown-appear_0.2s_ease-out] search-dropdown-scrollbar"
+  >
+    @if (searchStore.isLoading | signal) {
+    <div class="flex flex-col gap-2 p-3">
+      @for (item of skeletonItems; track $index) {
+      <div class="flex gap-4 p-3">
+        <app-skeleton-loader width="60px" height="90px" />
+        <div class="flex-1 flex flex-col gap-2 justify-center">
+          <app-skeleton-loader width="70%" height="20px" />
+          <app-skeleton-loader width="40%" height="16px" />
+        </div>
+      </div>
+      }
+    </div>
+    } @if (!(searchStore.isLoading | signal) && (searchStore.results | signal).length > 0) {
+    <div class="flex flex-col gap-2 p-3">
+      @for (result of searchStore.results | signal; track result.id) { @let movieInfo = result | getMovieInfo;
+      <button
+        type="button"
+        class="flex gap-4 p-3 bg-transparent border border-transparent rounded-xl text-left cursor-pointer transition-all duration-200 hover:bg-purple-500/5 hover:border-purple-500/20 hover:translate-x-1 dark:hover:bg-purple-500/10 dark:hover:border-purple-500/30 group"
+        (click)="onResultClick(movieInfo.type, result.id)"
+      >
+        <img
+          [src]="movieInfo.posterUrl"
+          [alt]="movieInfo.title"
+          class="w-[60px] h-[90px] sm:w-[50px] sm:h-[75px] object-cover rounded-lg shrink-0 shadow-md transition-shadow group-hover:shadow-lg"
+          loading="lazy"
+          appImageFallback
+        />
+        <div class="flex-1 flex flex-col gap-2 justify-center min-w-0">
+          <h3 class="text-base sm:text-sm font-semibold text-gray-900 dark:text-gray-100 truncate m-0">
+            {{ movieInfo.title }}
+          </h3>
+          <div class="flex items-center gap-2 text-sm sm:text-xs text-gray-500 dark:text-gray-400">
+            <span>{{ movieInfo.year }}</span>
+            <span class="text-gray-300 dark:text-gray-600">•</span>
+            <span>{{ movieInfo.type === 'movie' ? 'Película' : 'Serie' }}</span>
+            @if (result.vote_average > 0) {
+            <span class="text-gray-300 dark:text-gray-600">•</span>
+            <div class="flex items-center gap-1 text-yellow-500">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+              <span>{{ result.vote_average | toFixed:1 }}</span>
+            </div>
+            }
+          </div>
+        </div>
+      </button>
+      }
+    </div>
+    } @if (hasEmptyResults | signal) {
+    <div class="flex flex-col items-center justify-center py-12 px-6 text-center text-gray-500 dark:text-gray-400">
+      <svg
+        class="mb-4 opacity-50"
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+      <p class="text-lg font-semibold text-gray-900 dark:text-gray-100 m-0 mb-2">No se encontraron resultados</p>
+      <p class="text-sm m-0">Intenta con otro término de búsqueda</p>
+    </div>
+    }
+  </div>
+  }
+</div>

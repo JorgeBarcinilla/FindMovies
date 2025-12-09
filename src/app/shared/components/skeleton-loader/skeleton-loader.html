@@ -1,0 +1,5 @@
+<div
+  [class]="'bg-white/10 dark:bg-gray-900/60 backdrop-blur-md border border-white/20 dark:border-white/10 animate-skeleton-pulse ' + ((shape | signal) === 'circle' ? 'rounded-full' : 'rounded-lg') + ' ' + (customClass | signal)"
+  [style.width]="width | signal"
+  [style.height]="height | signal"
+></div>

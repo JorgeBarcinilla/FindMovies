@@ -1,6 +1,6 @@
 {
   "name": "find-movies",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Jorge Palacio Barcinilla",
   "scripts": {
     "ng": "ng",
@@ -11,7 +11,9 @@
     "serve:ssr:FindMovies": "node dist/FindMovies/server/server.mjs",
     "prepare": "husky install",
     "build:doc": "compodoc -p tsconfig.doc.json --theme  -d dist/apps/documentation/compodoc ",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "storybook": "ng run FindMovies:storybook",
+    "build-storybook": "ng run FindMovies:build-storybook"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,html}": [
@@ -32,19 +34,29 @@
     "@angular/platform-server": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.13",
+    "@ngrx/operators": "^20.1.0",
+    "@ngrx/signals": "^20.1.0",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-devkit/architect": "^0.2003.0",
+    "@angular-devkit/build-angular": "^20.3.0",
+    "@angular-devkit/core": "^20.3.0",
     "@angular-eslint/schematics": "^21.0.1",
     "@angular/build": "^20.3.13",
     "@angular/cli": "^20.3.13",
     "@angular/compiler-cli": "^20.3.0",
+    "@angular/platform-browser-dynamic": "^20.3.0",
     "@compodoc/compodoc": "^1.1.32",
     "@ngrx/eslint-plugin": "^20.0.1",
     "@ngrx/schematics": "^20.1.0",
     "@smarttools/eslint-plugin-rxjs": "^1.0.22",
+    "@storybook/addon-a11y": "^10.1.4",
+    "@storybook/addon-docs": "^10.1.4",
+    "@storybook/addon-onboarding": "^10.1.4",
+    "@storybook/angular": "^10.1.4",
     "@stylistic/eslint-plugin": "^5.5.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/express": "^5.0.1",
@@ -59,6 +71,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^60.3.0",
     "eslint-plugin-perfectionist": "^4.15.0",
+    "eslint-plugin-storybook": "^10.1.4",
     "husky": "^9.0.6",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
@@ -69,6 +82,7 @@
     "lint-staged": "^16.2.3",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "storybook": "^10.1.4",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.40.0"

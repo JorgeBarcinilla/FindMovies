@@ -1,0 +1,41 @@
+<div class="relative w-full group">
+  <button
+    type="button"
+    class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-black/80 dark:bg-black/80 border border-white/20 rounded-full text-gray-100 cursor-pointer transition-all duration-300 hover:bg-black/90 hover:border-purple-500/50 hover:shadow-[0_4px_20px_rgba(168,85,247,0.3)] hover:scale-110 md:flex"
+    (click)="scrollLeft()"
+    aria-label="Scroll left"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-6 h-6"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+  </button>
+
+  <div #scrollContainer class="flex overflow-x-auto scroll-smooth scrollbar-hide py-4" [style.gap.px]="gap | signal">
+    <ng-content />
+  </div>
+
+  <button
+    type="button"
+    class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 items-center justify-center bg-black/80 dark:bg-black/80 border border-white/20 rounded-full text-gray-100 cursor-pointer transition-all duration-300 hover:bg-black/90 hover:border-purple-500/50 hover:shadow-[0_4px_20px_rgba(168,85,247,0.3)] hover:scale-110 hidden md:flex"
+    (click)="scrollRight()"
+    aria-label="Scroll right"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-6 h-6"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+    </svg>
+  </button>
+</div>

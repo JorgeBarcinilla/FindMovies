@@ -1,0 +1,214 @@
+@let detailsValue = details | signal;
+<!-- Loading State -->
+@if (detailsStore.isLoading | signal) {
+<div
+  class="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-[hsl(220,30%,5%)] dark:to-[hsl(220,25%,10%)] p-8"
+>
+  <div class="w-full h-[500px] mb-8">
+    <app-skeleton-loader width="100%" height="500px" />
+  </div>
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[300px_1fr] gap-12">
+    <div class="w-[300px]">
+      <app-skeleton-loader width="300px" height="450px" />
+    </div>
+    <div class="flex flex-col gap-6">
+      <app-skeleton-loader width="60%" height="48px" />
+      <app-skeleton-loader width="40%" height="24px" />
+      <app-skeleton-loader width="80%" height="120px" />
+    </div>
+  </div>
+</div>
+}
+
+<!-- Error State -->
+@if ((detailsStore.error | signal) && !(detailsStore.isLoading | signal)) {
+<div
+  class="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-[hsl(220,30%,5%)] dark:to-[hsl(220,25%,10%)] flex items-center justify-center p-8"
+>
+  <div class="text-center max-w-md">
+    <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Error al cargar detalles</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">{{ (detailsStore.error | signal)?.message }}</p>
+    <ng-container *ngTemplateOutlet="goBackTemplate"></ng-container>
+    <app-theme-toggle class="absolute top-8 right-8 z-10" />
+  </div>
+</div>
+}
+
+<!-- Details Content -->
+@if (detailsValue && !(detailsStore.isLoading | signal)) {
+<div class="min-h-screen bg-gray-100 dark:bg-slate-900 text-gray-900 dark:text-gray-100 animate-[fade-in_0.5s_ease-in]">
+  <!-- Backdrop Hero Section -->
+  <div
+    class="relative w-full h-[500px] bg-cover bg-center bg-no-repeat"
+    [style.background-image]="'url(' + (backdropUrl | signal) + ')'"
+  >
+    <div
+      class="absolute inset-0 bg-linear-to-b from-transparent via-50% via-gray-100/60 to-gray-100 dark:from-transparent dark:via-30% dark:via-slate-900/40 dark:to-slate-900"
+    ></div>
+    <ng-container *ngTemplateOutlet="goBackTemplate"></ng-container>
+    <app-theme-toggle class="absolute top-8 right-8 z-10" />
+  </div>
+
+  <!-- Main Content -->
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-8 -mt-48 pb-16 z-10">
+    <div class="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-12">
+      <!-- Poster -->
+      <div class="md:sticky md:top-8 h-fit mx-auto md:mx-0">
+        <img
+          [src]="posterUrl | signal"
+          [alt]="title | signal"
+          class="w-full rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(168,85,247,0.3)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_80px_rgba(0,0,0,0.7),0_0_60px_rgba(168,85,247,0.5)]"
+          appImageFallback
+        />
+      </div>
+
+      <!-- Info Section -->
+      <div class="flex flex-col gap-8">
+        <!-- Title and Meta -->
+        <div class="animate-fade-in-up">
+          <h1
+            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 bg-linear-to-r from-gray-900 to-purple-600 dark:from-white dark:to-purple-400 bg-clip-text text-transparent"
+          >
+            {{ title | signal }}
+          </h1>
+          <div class="flex flex-wrap items-center gap-3 text-lg text-gray-600 dark:text-gray-400">
+            <span>{{ year | signal }}</span>
+            @if (runtimeInfo | signal) {
+            <span class="text-gray-400 dark:text-gray-500">•</span>
+            <span>{{ runtimeInfo | signal }}</span>
+            }
+            <span class="text-gray-400 dark:text-gray-500">•</span>
+            <div class="flex items-center gap-1">
+              @for (filled of (ratingStars | signal); track $index) {
+              <svg
+                class="w-5 h-5 transition-colors duration-200"
+                [class.text-gray-300]="!filled"
+                [class.dark:text-gray-600]="!filled"
+                [class.text-yellow-500]="filled"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+              }
+              <span class="ml-2 font-semibold text-yellow-500">{{ detailsValue.vote_average | toFixed:1 }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Genres -->
+        @if (detailsValue.genres && detailsValue.genres.length > 0) {
+        <div class="flex flex-wrap gap-3 animate-fade-in-up">
+          @for (genre of detailsValue.genres; track genre.id) {
+          <span
+            class="px-5 py-2 bg-linear-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 rounded-full text-sm font-semibold text-purple-600 dark:text-purple-300 backdrop-blur-md transition-all duration-300 hover:from-purple-500/30 hover:to-blue-500/30 hover:border-purple-500/50 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,85,247,0.3)]"
+          >
+            {{ genre.name }}
+          </span>
+          }
+        </div>
+        }
+
+        <!-- Tagline -->
+        @if (detailsValue.tagline) {
+        <p class="text-xl italic text-purple-600 dark:text-purple-400 animate-fade-in-up">
+          "{{ detailsValue.tagline }}"
+        </p>
+        }
+
+        <!-- Overview -->
+        <div class="animate-fade-in-up">
+          <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Sinopsis</h2>
+          <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">{{ detailsValue.overview }}</p>
+        </div>
+
+        <!-- Creators/Director -->
+        @if (creators | signal) {
+        <div
+          class="flex flex-col gap-4 p-6 bg-slate-900/2 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl animate-fade-in-up"
+        >
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">
+            {{ (mediaType | signal) === 'tv' ? 'Creadores' : 'Director' }}
+          </h3>
+          <p class="font-medium text-gray-900 dark:text-gray-100">{{ creators | signal }}</p>
+        </div>
+        }
+
+        <!-- Production Companies -->
+        @if (detailsValue.production_companies && detailsValue.production_companies.length > 0) {
+        <div class="animate-fade-in-up">
+          <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Producción</h3>
+          <div class="flex flex-wrap gap-8">
+            @for (company of detailsValue.production_companies; track company.id) { @if (company.logo_path) {
+            <div
+              class="flex items-center p-4 bg-slate-900/2 dark:bg-white/5 backdrop-blur-lg border border-gray-300 dark:border-white/10 rounded-xl transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/20 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
+            >
+              <img
+                [src]="`https://image.tmdb.org/t/p/w200${company.logo_path}`"
+                [alt]="company.name"
+                class="max-w-[120px] max-h-[60px] object-contain brightness-90 dark:brightness-100"
+                appImageFallback
+              />
+            </div>
+            } }
+          </div>
+        </div>
+        }
+
+        <!-- Status -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+          <div
+            class="flex flex-col gap-2 p-4 bg-slate-900/2 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/20 hover:-translate-y-0.5"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Estado</span>
+            <span class="font-medium text-gray-900 dark:text-gray-100">{{ detailsValue.status }}</span>
+          </div>
+          @if ('release_date' in detailsValue) {
+          <div
+            class="flex flex-col gap-2 p-4 bg-slate-900/2 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/20 hover:-translate-y-0.5"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Estreno</span>
+            <span class="font-medium text-gray-900 dark:text-gray-100"
+              >{{ detailsValue.release_date | date: 'MMM d, y' }}</span
+            >
+          </div>
+          } @if ('first_air_date' in detailsValue) {
+          <div
+            class="flex flex-col gap-2 p-4 bg-slate-900/2 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/20 hover:-translate-y-0.5"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400"
+              >Primer episodio</span
+            >
+            <span class="font-medium text-gray-900 dark:text-gray-100"
+              >{{ detailsValue.first_air_date | date: 'MMM d, y' }}</span
+            >
+          </div>
+          } @if ('last_air_date' in detailsValue) {
+          <div
+            class="flex flex-col gap-2 p-4 bg-slate-900/2 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/20 hover:-translate-y-0.5"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400"
+              >Último episodio</span
+            >
+            <span class="font-medium text-gray-900 dark:text-gray-100"
+              >{{ detailsValue.last_air_date | date: 'MMM d, y' }}</span
+            >
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<ng-template #goBackTemplate>
+  <button
+    class="absolute top-8 left-8 z-10 px-8 py-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/10 hover:border-purple-500/30 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,85,247,0.3)] rounded-full font-bold cursor-pointer"
+    (click)="goBack()"
+  >
+    Volver
+  </button>
+</ng-template>
