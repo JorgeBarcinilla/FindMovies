@@ -13,7 +13,8 @@
     "build:doc": "compodoc -p tsconfig.doc.json --theme  -d dist/documentation ",
     "lint": "ng lint",
     "storybook": "ng run FindMovies:storybook",
-    "build-storybook": "ng run FindMovies:build-storybook"
+    "build-storybook": "ng run FindMovies:build-storybook",
+    "netlify:deploy": "npm run build && npm run build:doc && cp -r dist/documentation dist/FindMovies/browser"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,html}": [

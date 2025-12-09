@@ -1,3 +1,7 @@
+[build]
+command = "npm run netlify:deploy"
+publish = "dist/FindMovies/browser"
+
 [[redirects]]
 from = "/*"
 to = "/index.html"
